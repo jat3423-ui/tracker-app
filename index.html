@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Location Tracker</title>
+</head>
+<body>
+  <h2>Tracking location...</h2>
+
+  <script>
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        function(position) {
+          const data = {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
+          };
+
+          fetch("https://tracker-app-odyw.onrender.com/track", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+          });
+
+          document.body.innerHTML = "Location sent successfully ✅";
+        },
+        function(error) {
+          document.body.innerHTML = "Location permission denied ❌";
+        }
+      );
+    } else {
+      document.body.innerHTML = "Geolocation not supported";
+    }
+  </script>
+</body>
+</html>
