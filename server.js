@@ -14,7 +14,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname));
 
 // MongoDB Connection
-mongoose.connect("mongodb+srv://divyanshchoudhary876_db_user:l2Mwf8DIjAk1y03G@cluster0.zammc3k.mongodb.net/trackerDB?retryWrites=true&w=majority")
+mongoose.connect(process.env.MONGODB_URI || "mongodb+srv://divyanshchoudhary876_db_user:l2Mwf8DIjAk1y03G@cluster0.zammc3k.mongodb.net/trackerDB?retryWrites=true&w=majority")
   .then(() => console.log("✅ MongoDB Connected"))
   .catch(err => console.log("❌ DB Error:", err));
 
@@ -34,22 +34,16 @@ app.get("/", (req, res) => {
 app.post("/track", async (req, res) => {
   try {
     const { latitude, longitude } = req.body;
-
     if (!latitude || !longitude) {
       return res.status(400).json({ error: "Missing location data" });
     }
-
     console.log("📍 Location received:");
     console.log("Latitude:", latitude);
     console.log("Longitude:", longitude);
-
     const mapLink = `https://www.google.com/maps?q=${latitude},${longitude}`;
     console.log("🌍 Google Maps:", mapLink);
-
     await Location.create({ latitude, longitude });
-
     res.json({ message: "Saved in DB ✅" });
-
   } catch (error) {
     console.log("❌ Error:", error);
     res.status(500).json({ error: "Failed to save" });
@@ -58,7 +52,6 @@ app.post("/track", async (req, res) => {
 
 // Start server
 const PORT = process.env.PORT || 3000;
-
 app.listen(PORT, () => {
   console.log("🚀 Server running on port " + PORT);
 });
