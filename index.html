@@ -1,37 +1,113 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Location Tracker</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      text-align: center;
+      width: 300px;
+    }
+
+    h1 {
+      font-size: 22px;
+      margin-bottom: 20px;
+    }
+
+    button {
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    .status {
+      margin-top: 20px;
+      font-size: 14px;
+      color: green;
+    }
+
+    .error {
+      color: red;
+    }
+  </style>
 </head>
+
 <body>
-  <h2>Tracking location...</h2>
+
+  <div class="container">
+    <h1>📍 Location Tracker</h1>
+
+    <button onclick="sendLocation()">Send My Location</button>
+
+    <div id="status" class="status"></div>
+  </div>
 
   <script>
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        function(position) {
-          const data = {
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude
-          };
+    async function sendLocation() {
+      const status = document.getElementById("status");
 
-          fetch("https://tracker-app-odyw.onrender.com/track", {
+      if (!navigator.geolocation) {
+        status.innerHTML = "❌ Geolocation not supported";
+        status.classList.add("error");
+        return;
+      }
+
+      status.innerHTML = "📡 Getting your location...";
+
+      navigator.geolocation.getCurrentPosition(async (position) => {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+
+        try {
+          const res = await fetch("/track", {
             method: "POST",
             headers: {
               "Content-Type": "application/json"
             },
-            body: JSON.stringify(data)
+            body: JSON.stringify({ latitude, longitude })
           });
 
-          document.body.innerHTML = "Location sent successfully ✅";
-        },
-        function(error) {
-          document.body.innerHTML = "Location permission denied ❌";
+          const data = await res.json();
+
+          status.innerHTML = "✅ Location sent successfully!";
+          status.classList.remove("error");
+
+        } catch (err) {
+          status.innerHTML = "❌ Failed to send location";
+          status.classList.add("error");
         }
-      );
-    } else {
-      document.body.innerHTML = "Geolocation not supported";
+
+      }, () => {
+        status.innerHTML = "❌ Location permission denied";
+        status.classList.add("error");
+      });
     }
   </script>
+
 </body>
 </html>
