@@ -30,6 +30,10 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
 
+app.get("/map", (req, res) => {
+  res.sendFile(path.join(__dirname, "map.html"));
+});
+
 // Tracking route
 app.post("/track", async (req, res) => {
   try {
