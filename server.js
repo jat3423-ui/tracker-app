@@ -22,6 +22,7 @@ mongoose.connect(process.env.MONGODB_URI || "mongodb+srv://divyanshchoudhary876_
 const Location = mongoose.model("Location", {
   latitude: String,
   longitude: String,
+  mapLink: String,   
   time: { type: Date, default: Date.now }
 });
 
