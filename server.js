@@ -1,34 +1,35 @@
+require("dotenv").config();
+
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
 
 const app = express();
 
-// ✅ Middleware
 app.use(cors());
 app.use(express.json());
 
-// ✅ Home route (optional)
+// ✅ Serve static files (THIS FIXES YOUR ISSUE)
+app.use(express.static(path.join(__dirname)));
+
+// ✅ Default route
 app.get("/", (req, res) => {
-  res.send("Server is running 🚀");
+  res.sendFile(path.join(__dirname, "index.html"));
 });
 
-// ✅ Serve tracking page (MAIN STEP)
-app.get("/track", (req, res) => {
-  res.sendFile(path.join(__dirname, "track.html"));
+// ✅ Tracking route
+app.post("/track", (req, res) => {
+  const { latitude, longitude } = req.body;
+
+  console.log("📍 Location received:");
+  console.log("Latitude:", latitude);
+  console.log("Longitude:", longitude);
+
+  res.json({ message: "Location received" });
 });
 
-// ✅ Receive location
-app.post("/location", (req, res) => {
-  const { lat, lng } = req.body;
+const PORT = process.env.PORT || 3000;
 
-  console.log("📍 Location received:", lat, lng);
-  console.log("🌍 https://maps.google.com/?q=" + lat + "," + lng);
-
-  res.send("OK");
-});
-
-// ✅ Start server
-app.listen(3000, () => {
-  console.log("🚀 Server running on http://localhost:3000");
+app.listen(PORT, () => {
+  console.log("🚀 Server running on port " + PORT);
 });
