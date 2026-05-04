@@ -23,6 +23,10 @@ app.post("/track", (req, res) => {
   console.log("Latitude:", latitude);
   console.log("Longitude:", longitude);
 
+  const mapLink = `https://www.google.com/maps?q=${latitude},${longitude}`;
+
+  console.log("🌍 Google Maps:", mapLink);
+
   res.json({ message: "Location received" });
 });
 
