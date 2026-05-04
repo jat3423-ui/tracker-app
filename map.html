@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Location Map</title>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDiZq4ir1UDG2fMVHz6gBg-IKz7S1OUfcY"></script>
+</head>
+<body>
+
+<h2>📍 User Locations</h2>
+<div id="map" style="height: 500px; width: 100%;"></div>
+
+<script>
+async function loadMap() {
+  const res = await fetch("/locations");
+  const data = await res.json();
+
+  if (data.length === 0) {
+    alert("No data found");
+    return;
+  }
+
+  const center = {
+    lat: parseFloat(data[0].latitude),
+    lng: parseFloat(data[0].longitude)
+  };
+
+  const map = new google.maps.Map(document.getElementById("map"), {
+    zoom: 5,
+    center: center
+  });
+
+  data.forEach(loc => {
+    new google.maps.Marker({
+      position: {
+        lat: parseFloat(loc.latitude),
+        lng: parseFloat(loc.longitude)
+      },
+      map: map
+    });
+  });
+}
+
+loadMap();
+</script>
+
+</body>
+</html>
