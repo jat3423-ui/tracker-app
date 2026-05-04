@@ -5,34 +5,39 @@ const mongoose = require("mongoose");
 
 const app = express();
 
-// ✅ Middleware
+// Middleware
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// ✅ Serve HTML
+// Serve HTML
 app.use(express.static(__dirname));
 
-// ✅ MongoDB Connection (REPLACE THIS URL)
-mongoose.connect(mongodb+srv://divyanshchoudhary876_db_user:l2Mwf8DIjAk1y03G@cluster0.zammc3k.mongodb.net/?appName=Cluster0)
+// MongoDB Connection
+mongoose.connect("mongodb+srv://divyanshchoudhary876_db_user:l2Mwf8DIjAk1y03G@cluster0.zammc3k.mongodb.net/trackerDB?retryWrites=true&w=majority")
   .then(() => console.log("✅ MongoDB Connected"))
   .catch(err => console.log("❌ DB Error:", err));
 
-// ✅ Schema
+// Schema
 const Location = mongoose.model("Location", {
   latitude: String,
   longitude: String,
   time: { type: Date, default: Date.now }
 });
 
-// ✅ Home route
+// Home route
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
 
-// ✅ Tracking route
+// Tracking route
 app.post("/track", async (req, res) => {
   try {
     const { latitude, longitude } = req.body;
+
+    if (!latitude || !longitude) {
+      return res.status(400).json({ error: "Missing location data" });
+    }
 
     console.log("📍 Location received:");
     console.log("Latitude:", latitude);
@@ -41,7 +46,6 @@ app.post("/track", async (req, res) => {
     const mapLink = `https://www.google.com/maps?q=${latitude},${longitude}`;
     console.log("🌍 Google Maps:", mapLink);
 
-    // ✅ Save to MongoDB
     await Location.create({ latitude, longitude });
 
     res.json({ message: "Saved in DB ✅" });
@@ -52,7 +56,7 @@ app.post("/track", async (req, res) => {
   }
 });
 
-// ✅ Start server
+// Start server
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
