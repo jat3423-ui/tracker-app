@@ -47,7 +47,13 @@ app.post("/track", async (req, res) => {
     console.log("Longitude:", longitude);
     const mapLink = `https://www.google.com/maps?q=${latitude},${longitude}`;
     console.log("🌍 Google Maps:", mapLink);
-    await Location.create({ latitude, longitude });
+    
+    await Location.create({
+  latitude,
+  longitude,
+  mapLink
+});
+    
     res.json({ message: "Saved in DB ✅" });
   } catch (error) {
     console.log("❌ Error:", error);
