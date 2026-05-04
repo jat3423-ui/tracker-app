@@ -14,7 +14,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname));
 
 // MongoDB Connection
-mongoose.connect(process.env.MONGODB_URI || "mongodb+srv://divyanshchoudhary876_db_user:l2Mwf8DIjAk1y03G@cluster0.zammc3k.mongodb.net/trackerDB?retryWrites=true&w=majority")
+mongoose.connect(process.env.MONGODB_URI || "mongodb+srv://divyanshchoudhary876_db_user:oWJ4CvyCQpmy7SFT@cluster0.zammc3k.mongodb.net/trackerDB?retryWrites=true&w=majority")
   .then(() => console.log("✅ MongoDB Connected"))
   .catch(err => console.log("❌ DB Error:", err));
 
